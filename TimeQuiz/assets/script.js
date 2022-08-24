@@ -1,3 +1,37 @@
+var questions = [
+    {
+      title: "An array’s length can be evaluated with the what property?",
+      multiChoice: [".length", ".log", "the console", ".loop"],
+      answer: ".length"
+    },
+  
+    {
+      title: "Within a loop, the 'break' keyword may be used to do what?",
+      multiChoice: ["break your competitors code", "exit the loop immediately", "repeat the loop", "indicate a stopping condition"],
+      answer: "exit the loop immediately"
+    },
+  
+    {
+      title: "Properties in a JavaScript oject are often refferred to as what?",
+      multiChoice: ["dot walking", "key-value pairs", "nested properties", "undefined"],
+      answer: "key-value pairs"
+    },
+  
+    {
+      title: "Which array method inserts an element at the end of the array?",
+      multiChoice: [".pop()", ".push()", ".length", ".join()"],
+      answer: ".push()"
+    },
+  
+    {
+      title: "What is a callback function?",
+      multiChoice: ["a function that accepts an array as an argument", "I function that performs an HTTP request", "a data type similar to a string or a boolean", "a function that is passed into another function as an argument"],
+      answer: "a function that is passed into another function as an argument"
+    }
+  ];
+
+
+
 // a variable for start time
 let secondsLeft = 76;
 
@@ -27,7 +61,7 @@ let results = document.getElementById("results");
 var choices = document.getElementById("choices");
 
 
-// an array to store high scores
+// an array to store high scores; sets empty array to return when strotin the array
 let emptyArray = [];
 
 // the array of high scores from local storage
@@ -43,8 +77,7 @@ let score = 0
 function setTime() {
   displayQuestions();
   let timerInterval = setInterval(function() {
-    secondsLeft--;
-    timer.textContent = "";
+    secondsLeft--;//subtracts secounds in ammount for interval timer
     timer.textContent = "Time: " + secondsLeft;
     if (secondsLeft <= 0 || questionCount === questions.length) {
       clearInterval(timerInterval);
@@ -56,62 +89,62 @@ function setTime() {
 //function to load the questions on the page
 function displayQuestions() {
   removeEls(startButton);
-
+// sets up moving to next question by checking the question count is the same number of question array in the questions object.
   if (questionCount < questions.length) {
     questionDiv.innerHTML = questions[questionCount].title;
     choices.textContent = "";
-
+//This sets the loop for the each questions
     for (let i = 0; i < questions[questionCount].multiChoice.length; i++) {
-      let el = document.createElement("button");
-      el.innerText = questions[questionCount].multiChoice[i];
-      el.setAttribute("data-id", i);
-      el.addEventListener("click", function (event) {
+      let el = document.createElement("button");//creates button for choices.
+      el.innerText = questions[questionCount].multiChoice[i];// adds the text for option buttons
+      el.setAttribute("data-id", i); // sets the attribute of each option created 
+      el.addEventListener("click", function (event) {   //This determines the path and function to "answered click"
         event.stopPropagation();
 
-        if (el.innerText === questions[questionCount].answer) {
-          score += secondsLeft;
-        } else {
-          score -= 10;
-          secondsLeft = secondsLeft - 15;
+        if (el.innerText === questions[questionCount].answer) { // if it is the answer then it adds time.
+          score += secondsLeft; //adds to scroe variable questions left
+        } else { // if answered wrong it subtractws time
+          score -= 10; //takes ten points away from score if you miss the score
+          secondsLeft = secondsLeft - 15; // subtracts 15 from seconds left if wrong answer.
         }
         
-        questionDiv.innerHTML = "";
+        questionDiv.innerHTML = ""; //black string that targets questio div.
 
-        if (questionCount === questions.length) {
+        if (questionCount === questions.length) { // moves to next question until all questions are completed
           return;
         } else {
           questionCount++;
           displayQuestions();
         }
       });
-      choices.append(el);
+      choices.append(el); //appends the element choices 
     }
   }
 }
 
-
+// this creates the user score
 function captureUserScore() {
   timer.remove();
   choices.textContent = "";
 
-  let initialsInput = document.createElement("input");
-  let postScoreBtn = document.createElement("input");
+  let initialsInput = document.createElement("input");//creates the input box for intials for the 
+  let postScoreBtn = document.createElement("input"); //creates button to post your score and 
 
   results.innerHTML = `You scored ${score} points! Enter initials: `;
-  initialsInput.setAttribute("type", "text");
-  postScoreBtn.setAttribute("type", "button");
-  postScoreBtn.setAttribute("value", "Post My Score!");
-  postScoreBtn.addEventListener("click", function (event) {
+  initialsInput.setAttribute("type", "text");//sts the attribute for the initial input space
+  postScoreBtn.setAttribute("type", "button");//makes the score button a button type
+  postScoreBtn.setAttribute("value", "Post My Score!");//texty within button
+  postScoreBtn.addEventListener("click", function (event) { //creates event for the post score
     event.preventDefault();
-    let scoresArray = defineScoresArray(storedArray, emptyArray);
+    let scoresArray = defineScoresArray(storedArray, emptyArray); //defines scoers array
 
-    let initials = initialsInput.value;
+    let initials = initialsInput.value;//defines intials to the input value
     let userAndScore = {
       initials: initials,
       score: score,
     };
 
-    scoresArray.push(userAndScore);
+    scoresArray.push(userAndScore);// adds user and Score to scores Array
     saveScores(scoresArray);
     displayAllScores();
     clearScoresBtn();
@@ -126,31 +159,31 @@ const saveScores = (array) => {
   window.localStorage.setItem("highScores", JSON.stringify(array));
 }
 
-const defineScoresArray = (arr1, arr2) => {
+const defineScoresArray = (arr1, arr2) => { //creates array of scores if the array is not null then the array is created, else if it is empty it returns an empty array.
   if(arr1 !== null) {
     return arr1
   } else {
     return arr2
   }
 }
-
+// remove Els removes the elements; ... selects all elements; the for loop below looks at elements and then removes those elements. 
 const removeEls = (...els) => {
   for (let el of els) el.remove();
 }
-
+// creates 
 function displayAllScores() {
   removeEls(timer, startButton, results);
   let scoresArray = defineScoresArray(storedArray, emptyArray);
-
+//creates obj to store initials and score then appends scoresDiv to display initial and score
   scoresArray.forEach(obj => {
     let initials = obj.initials;
     let storedScore = obj.score;
-    let resultsP = document.createElement("p");
-    resultsP.innerText = `${initials}: ${storedScore}`;
+    let resultsP = document.createElement("p");//creates paragraph of the after goin through the game.
+    resultsP.innerText = `${initials}: ${storedScore}`;//This covers the diplay pulling form tghe variables storedScore and ititials
     scoresDiv.append(resultsP);
   });
 }
-
+//add function to view previous scores 
 function viewScores() {
   viewScoresBtn.addEventListener("click", function(event) {
     event.preventDefault();
