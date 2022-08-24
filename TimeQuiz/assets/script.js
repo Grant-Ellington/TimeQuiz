@@ -99,7 +99,7 @@ function displayQuestions() {
       el.innerText = questions[questionCount].multiChoice[i];// adds the text for option buttons
       el.setAttribute("data-id", i); // sets the attribute of each option created 
       el.addEventListener("click", function (event) {   //This determines the path and function to "answered click"
-        event.stopPropagation();
+        event.stopPropagation();// ends the the function of for the button so it does not effect other buttons.
 
         if (el.innerText === questions[questionCount].answer) { // if it is the answer then it adds time.
           score += secondsLeft; //adds to scroe variable questions left
@@ -135,17 +135,17 @@ function captureUserScore() {
   postScoreBtn.setAttribute("type", "button");//makes the score button a button type
   postScoreBtn.setAttribute("value", "Post My Score!");//texty within button
   postScoreBtn.addEventListener("click", function (event) { //creates event for the post score
-    event.preventDefault();
+    event.preventDefault();// prevents running of previous button click of the element
     let scoresArray = defineScoresArray(storedArray, emptyArray); //defines scoers array
 
     let initials = initialsInput.value;//defines intials to the input value
-    let userAndScore = {
+    let userAndScore = { // creates userAndScore variable
       initials: initials,
       score: score,
     };
 
     scoresArray.push(userAndScore);// adds user and Score to scores Array
-    saveScores(scoresArray);
+    saveScores(scoresArray);// calls saves Scores to strigify them into an array
     displayAllScores();
     clearScoresBtn();
     goBackBtn();
@@ -155,7 +155,7 @@ function captureUserScore() {
   results.append(postScoreBtn);
 }
 
-const saveScores = (array) => {
+const saveScores = (array) => {// makes variable saves Scores and logs them as a a string.
   window.localStorage.setItem("highScores", JSON.stringify(array));
 }
 
@@ -175,7 +175,7 @@ function displayAllScores() {
   removeEls(timer, startButton, results);
   let scoresArray = defineScoresArray(storedArray, emptyArray);
 //creates obj to store initials and score then appends scoresDiv to display initial and score
-  scoresArray.forEach(obj => {
+  scoresArray.forEach(obj => { //forEach element in the obj create the initial element and stored Score element.
     let initials = obj.initials;
     let storedScore = obj.score;
     let resultsP = document.createElement("p");//creates paragraph of the after goin through the game.
@@ -183,40 +183,40 @@ function displayAllScores() {
     scoresDiv.append(resultsP);
   });
 }
-//add function to view previous scores 
+//what occurs when you click view scores
 function viewScores() {
-  viewScoresBtn.addEventListener("click", function(event) {
+  viewScoresBtn.addEventListener("click", function(event) { //listening for action to run function
     event.preventDefault();
-    removeEls(timer, startButton);
-    displayAllScores();
-    removeEls(viewScoresBtn);
-    clearScoresBtn();
-    goBackBtn();
+    removeEls(timer, startButton);// removes timer and start button
+    displayAllScores();// runs Diplay all scores
+    removeEls(viewScoresBtn);//removes view score button
+    clearScoresBtn(); //runs clear score button to creater button and functionality of the button
+    goBackBtn(); // runs the go back button byu populating the button and the functionality of the button
   });
 }
 
 function clearScoresBtn() {    
-  let clearBtn = document.createElement("input");
-  clearBtn.setAttribute("type", "button");
-  clearBtn.setAttribute("value", "Clear Scores");
+  let clearBtn = document.createElement("input");//creates the input field
+  clearBtn.setAttribute("type", "button");//makes the input element a button 
+  clearBtn.setAttribute("value", "Clear Scores");//adds text inside of the button
   clearBtn.addEventListener("click", function(event){
-    event.preventDefault();
-    removeEls(scoresDiv);
-    window.localStorage.removeItem("highScores");
+    event.preventDefault();// prevents previous button fuctions from running
+    removeEls(scoresDiv);// removes the scoresDiv from HTML and prevents its population
+    window.localStorage.removeItem("highScores");//clears scores from local storage
   })
-  scoresDiv.append(clearBtn)
+  scoresDiv.append(clearBtn)//replaces the clear button in the with the clearScoreButton 
 }
 
 function goBackBtn() {
-  let backBtn = document.createElement("input");
-  backBtn.setAttribute("type", "button");
-  backBtn.setAttribute("value", "Go Back");
-  backBtn.addEventListener("click", function(event){
-    event.preventDefault();
-    window.location.reload();
+  let backBtn = document.createElement("input");//creates button element and populates on the web page
+  backBtn.setAttribute("type", "button");//makes the input a button
+  backBtn.setAttribute("value", "Go Back");//Makes buton read Go back
+  backBtn.addEventListener("click", function(event){//adds the event listner to the the button
+    event.preventDefault();// removes all previous button EventListners 
+    window.location.reload();//relaods the current url
   })
-  buttonsDiv.append(backBtn)
+  buttonsDiv.append(backBtn)// sets this button to replace the backbtn
 }
 
 
-viewScores();
+viewScores();//runs view scores
